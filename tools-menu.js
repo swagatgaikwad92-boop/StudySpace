@@ -1,5 +1,3 @@
-import { bus } from '../utilities/events.js';
-
 /**
  * Floating tools / add menus
  */
@@ -52,7 +50,9 @@ export class ToolsMenu {
         !e.target.closest('#add-menu') &&
         !e.target.closest('#tools-menu') &&
         !e.target.closest('#add-btn') &&
-        !e.target.closest('#tools-btn')
+        !e.target.closest('#tools-btn') &&
+        !e.target.closest('#empty-add-btn') &&
+        !e.target.closest('#empty-tools-btn')
       ) {
         this.closeAll();
       }
@@ -69,6 +69,7 @@ export class ToolsMenu {
   }
 
   open(menu, anchor) {
+    menu.hidden = false;
     const rect = anchor.getBoundingClientRect();
     if (menu === this.addMenu) {
       menu.style.left = `${rect.left + rect.width / 2}px`;
@@ -76,17 +77,25 @@ export class ToolsMenu {
       menu.style.top = 'auto';
       menu.style.right = 'auto';
       menu.style.transform = 'translateX(-50%)';
+    } else {
+      // tools menu near tools button
+      menu.style.right = '24px';
+      menu.style.bottom = `${window.innerHeight - rect.top + 8}px`;
+      menu.style.left = 'auto';
+      menu.style.top = 'auto';
+      menu.style.transform = 'none';
     }
-    // tools menu uses CSS positioning
-    menu.classList.add('open');
+    // force reflow then open
+    requestAnimationFrame(() => menu.classList.add('open'));
   }
 
   close(menu) {
     menu.classList.remove('open');
+    setTimeout(() => { menu.hidden = true; }, 160);
   }
 
   closeAll() {
-    this.addMenu.classList.remove('open');
-    this.toolsMenu.classList.remove('open');
+    this.close(this.addMenu);
+    this.close(this.toolsMenu);
   }
 }
