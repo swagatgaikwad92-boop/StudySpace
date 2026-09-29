@@ -16,41 +16,93 @@
   <!-- Critical CSS: page remains usable even if external sheets fail -->
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f5f0;color:#2c2a26;-webkit-font-smoothing:antialiased;overscroll-behavior:none;touch-action:none}
+    html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;background:#f7f5f0;color:#2c2a26;-webkit-font-smoothing:antialiased;overscroll-behavior:none;touch-action:none}
     html{position:fixed;width:100%;height:100%}
     .skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:8px 16px;background:#3d5a4c;color:#fff;border-radius:8px;font-size:14px;text-decoration:none}
     .skip-link:focus{top:16px}
+
     #workspace{position:fixed;inset:0;overflow:hidden;background:#f7f5f0}
-    #canvas-container{position:absolute;inset:0;overflow:hidden;cursor:grab}
-    #canvas-world{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
-    #canvas-grid{position:absolute;top:-50%;left:-50%;width:200%;height:200%;pointer-events:none;background-image:radial-gradient(circle,rgba(44,42,38,.07) 1px,transparent 1px);background-size:28px 28px}
-    #grid-wave{position:absolute;top:-50%;left:-50%;width:200%;height:200%;pointer-events:none;opacity:0;z-index:1}
-    #objects-layer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:10}
-    #drawing-layer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:15;pointer-events:none}
+
+    /* Canvas + visible dotted desk */
+    #canvas-container{
+      position:absolute;inset:0;overflow:hidden;cursor:grab;
+      background-color:#f7f5f0;
+      background-image:radial-gradient(circle,rgba(44,42,38,.11) 1px,transparent 1px);
+      background-size:28px 28px;
+      background-position:0 0;
+    }
+    #canvas-container.is-panning{cursor:grabbing}
+    #canvas-world{position:absolute;top:0;left:0;width:1px;height:1px;transform-origin:0 0;will-change:transform}
+    #canvas-grid{display:none} /* grid now on container so it always shows */
+    #grid-wave{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:1}
+    #objects-layer{position:absolute;top:0;left:0;width:8000px;height:8000px;z-index:10}
+    #drawing-layer{position:absolute;top:0;left:0;width:8000px;height:8000px;z-index:15;pointer-events:none}
     #drawing-layer.active{pointer-events:auto;cursor:crosshair}
-    #empty-state{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:5;transition:opacity .3s}
+
+    /* Empty state — quiet, no competing chrome */
+    #empty-state{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:5;transition:opacity .35s ease}
     #empty-state.hidden{opacity:0;visibility:hidden}
-    #empty-state .empty-message{font-size:15px;color:#9a948c;margin-bottom:24px;letter-spacing:.02em}
-    #empty-state .empty-actions{display:flex;gap:12px;pointer-events:auto}
-    .floating-btn{position:fixed;z-index:300;width:44px;height:44px;border-radius:9999px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(44,42,38,.06);color:#2c2a26;-webkit-tap-highlight-color:transparent}
+    #empty-state .empty-message{font-size:15px;color:#a39e96;font-weight:400;letter-spacing:.03em}
+    #empty-state .empty-actions{display:none} /* floating buttons are the real actions */
+
+    /* Floating glass controls */
+    .floating-btn{
+      position:fixed;z-index:300;width:48px;height:48px;border-radius:9999px;border:1px solid rgba(44,42,38,.06);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+      background:rgba(255,255,255,.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      box-shadow:0 4px 20px rgba(44,42,38,.07),0 1px 3px rgba(44,42,38,.04);
+      color:#2c2a26;-webkit-tap-highlight-color:transparent;
+      transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+    }
+    .floating-btn:active{transform:scale(.94)}
     .floating-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-    #add-btn{bottom:24px;left:50%;transform:translateX(-50%)}
-    #tools-btn{bottom:24px;right:24px}
-    .popup-menu{position:fixed;z-index:400;min-width:180px;padding:8px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(44,42,38,.08);border-radius:14px;box-shadow:0 8px 40px rgba(44,42,38,.1);opacity:0;visibility:hidden;pointer-events:none;transform:scale(.95) translateY(4px);transition:opacity .15s,transform .15s,visibility .15s}
+    #add-btn{bottom:max(24px,env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%)}
+    #add-btn:active{transform:translateX(-50%) scale(.94)}
+    #tools-btn{bottom:max(24px,env(safe-area-inset-bottom,0px));right:max(20px,env(safe-area-inset-right,0px))}
+
+    /* Popup menus */
+    .popup-menu{
+      position:fixed;z-index:400;min-width:190px;padding:8px;
+      background:rgba(255,255,255,.88);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      border:1px solid rgba(44,42,38,.07);border-radius:16px;
+      box-shadow:0 10px 40px rgba(44,42,38,.1),0 2px 8px rgba(44,42,38,.04);
+      opacity:0;visibility:hidden;pointer-events:none;
+      transform:scale(.96) translateY(6px);
+      transition:opacity .16s ease,transform .16s ease,visibility .16s;
+    }
     .popup-menu.open{opacity:1;visibility:visible;pointer-events:auto;transform:scale(1) translateY(0)}
-    .popup-menu-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:none;background:transparent;border-radius:8px;font-size:14px;color:#2c2a26;cursor:pointer;text-align:left;font-family:inherit}
-    .popup-menu-item:hover{background:rgba(0,0,0,.05)}
-    .popup-menu-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round}
-    .popup-menu-divider{height:1px;background:rgba(44,42,38,.08);margin:4px 8px}
-    #pen-toolbar{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;padding:8px 12px;z-index:300;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-radius:14px;box-shadow:0 4px 24px rgba(44,42,38,.08);border:1px solid rgba(44,42,38,.08)}
+    .popup-menu-item{
+      display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;border:none;background:transparent;
+      border-radius:10px;font-size:14px;color:#2c2a26;cursor:pointer;text-align:left;font-family:inherit;font-weight:450;
+    }
+    .popup-menu-item:hover,.popup-menu-item:active{background:rgba(0,0,0,.045)}
+    .popup-menu-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round}
+    .popup-menu-divider{height:1px;background:rgba(44,42,38,.07);margin:5px 10px}
+
+    #pen-toolbar{
+      position:fixed;bottom:88px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;
+      padding:10px 14px;z-index:300;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);
+      border-radius:16px;box-shadow:0 6px 28px rgba(44,42,38,.08);border:1px solid rgba(44,42,38,.07)
+    }
     #pen-toolbar.visible{display:flex}
     #focus-overlay{position:fixed;inset:0;background:rgba(247,245,240,.55);z-index:9;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s}
     #focus-overlay.active{opacity:1;visibility:visible;pointer-events:auto}
     #context-menu{position:fixed;z-index:400}
-    #toast-container{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+    #toast-container{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+    .toast{padding:12px 18px;font-size:13px;color:#2c2a26;border-radius:12px;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);box-shadow:0 4px 20px rgba(44,42,38,.08);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s}
+    .toast.show{opacity:1;transform:translateY(0)}
+
     input[type="file"],.file-input-hidden{position:absolute!important;width:0!important;height:0!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;border:0!important}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:36px;padding:0 14px;border:none;border-radius:10px;background:rgba(255,255,255,.55);backdrop-filter:blur(12px);color:#2c2a26;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 2px 12px rgba(44,42,38,.04);border:1px solid rgba(44,42,38,.06)}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:4px;height:36px;padding:0 14px;border:none;border-radius:10px;
+      background:rgba(255,255,255,.55);backdrop-filter:blur(12px);color:#2c2a26;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;
+      box-shadow:0 2px 12px rgba(44,42,38,.04);border:1px solid rgba(44,42,38,.06)
+    }
     .btn:hover{background:rgba(255,255,255,.75)}
+    .btn-primary{background:#3d5a4c;color:#fff;border-color:transparent}
+    .btn-primary:hover{background:#2f4639}
+    .btn-ghost{background:transparent;box-shadow:none}
   </style>
 
   <link rel="stylesheet" href="styles/tokens.css" />
@@ -84,10 +136,6 @@
 
     <div id="empty-state">
       <p class="empty-message">Your desk is ready.</p>
-      <div class="empty-actions">
-        <button type="button" class="btn" id="empty-add-btn" aria-label="Add content">Add</button>
-        <button type="button" class="btn" id="empty-tools-btn" aria-label="Open tools">Tools</button>
-      </div>
     </div>
 
     <button type="button" id="add-btn" class="floating-btn" aria-label="Add content" title="Add">

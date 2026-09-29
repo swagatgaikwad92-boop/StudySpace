@@ -3,7 +3,7 @@
  * Relative paths for GitHub Pages compatibility
  */
 
-const CACHE_NAME = 'study-space-v2';
+const CACHE_NAME = 'study-space-v3';
 const SHELL = [
   './',
   './index.html',
