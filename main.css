@@ -1,0 +1,56 @@
+/* Study Space - main stylesheet */
+
+@import url("./tokens.css");
+@import url("./glass.css");
+@import url("./canvas.css");
+@import url("./windows.css");
+@import url("./controls.css");
+@import url("./tools.css");
+@import url("./pomodoro.css");
+@import url("./dabsy.css");
+@import url("./animations.css");
+@import url("./responsive.css");
+@import url("./accessibility.css");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+body {
+  position: relative;
+  touch-action: none;
+}
+
+/* Prevent iOS rubber-banding */
+html {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hidden file inputs */
+input[type="file"] {
+  display: none;
+}
+
+/* Selection color */
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}

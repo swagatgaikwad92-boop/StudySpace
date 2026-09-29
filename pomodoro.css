@@ -1,0 +1,129 @@
+/* Pomodoro floating object */
+
+.pomodoro-object {
+  width: 200px !important;
+  min-width: 180px !important;
+  min-height: auto !important;
+}
+
+.pomodoro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) var(--space-3) var(--space-3);
+  gap: var(--space-3);
+}
+
+.pomodoro-timer {
+  font-family: var(--font-mono);
+  font-size: 2.25rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  tabular-nums: true;
+  font-variant-numeric: tabular-nums;
+}
+
+.pomodoro-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: var(--weight-medium);
+}
+
+.pomodoro-label.work {
+  color: var(--color-accent);
+}
+
+.pomodoro-label.break {
+  color: var(--color-warning);
+}
+
+.pomodoro-label.finished {
+  color: var(--color-success);
+}
+
+.pomodoro-controls {
+  display: flex;
+  gap: var(--space-2);
+  width: 100%;
+  justify-content: center;
+}
+
+.pomodoro-controls .btn {
+  flex: 1;
+  max-width: 80px;
+}
+
+.pomodoro-settings {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+  justify-content: center;
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-1);
+}
+
+.pomodoro-setting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.pomodoro-setting label {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pomodoro-setting input {
+  width: 40px;
+  height: 28px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  outline: none;
+}
+
+.pomodoro-setting input:focus {
+  border-color: var(--color-accent);
+}
+
+/* Progress ring optional subtle */
+.pomodoro-ring {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+}
+
+.pomodoro-object.is-running .pomodoro-ring {
+  opacity: 1;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pomodoro-object.is-running .pomodoro-ring {
+    animation: none;
+    opacity: 1;
+  }
+}

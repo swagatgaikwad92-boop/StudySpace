@@ -1,0 +1,195 @@
+/* Spatial canvas workspace */
+
+#workspace {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#canvas-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+#canvas-container.is-panning {
+  cursor: grabbing;
+}
+
+#canvas-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* Subtle dotted grid */
+#canvas-grid {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--grid-dot) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: 0 0;
+  opacity: 1;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+#canvas-grid.wave-active {
+  /* Wave handled by overlay */
+}
+
+/* Wave overlay for Pomodoro start */
+#grid-wave {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--wave-x, 50%) var(--wave-y, 50%),
+    rgba(61, 90, 76, 0.12) 0%,
+    rgba(61, 90, 76, 0.06) 15%,
+    transparent 40%
+  );
+  transition: opacity var(--duration-wave) var(--ease-out);
+}
+
+#grid-wave.active {
+  opacity: 1;
+  animation: wave-expand var(--duration-wave) var(--ease-out) forwards;
+}
+
+@keyframes wave-expand {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.7;
+  }
+  60% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Objects layer */
+#objects-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-objects);
+}
+
+/* Drawing canvas overlay */
+#drawing-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: calc(var(--z-objects) + 5);
+  pointer-events: none;
+}
+
+#drawing-layer.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+#drawing-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Sized dynamically by JS to world bounds */
+}
+
+/* Empty state */
+#empty-state {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 1;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+#empty-state.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#empty-state .empty-message {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-normal);
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-6);
+}
+
+#empty-state .empty-actions {
+  display: flex;
+  gap: var(--space-3);
+  pointer-events: auto;
+}
+
+/* Selection outline */
+.object-selected {
+  outline: 2px solid rgba(61, 90, 76, 0.35);
+  outline-offset: 2px;
+}
+
+.object-selected::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(61, 90, 76, 0.12);
+  pointer-events: none;
+}
+
+/* Resize handles */
+.resize-handle {
+  position: absolute;
+  width: var(--object-handle);
+  height: var(--object-handle);
+  background: var(--color-surface-solid);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 2px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+  pointer-events: auto;
+}
+
+.object-selected .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle.nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.resize-handle.ne { top: -5px; right: -5px; cursor: nesw-resize; }
+.resize-handle.sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.resize-handle.se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+.resize-handle.n  { top: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+.resize-handle.s  { bottom: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+.resize-handle.e  { right: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+.resize-handle.w  { left: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }

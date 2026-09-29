@@ -1,0 +1,96 @@
+/* Accessibility */
+
+/* Visible focus */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+button:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  z-index: 9999;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-border-outer: rgba(0, 0, 0, 0.3);
+    --grid-dot: rgba(0, 0, 0, 0.2);
+    --color-border: rgba(0, 0, 0, 0.25);
+  }
+
+  .study-object {
+    border-width: 2px;
+  }
+
+  .object-selected {
+    outline-width: 3px;
+  }
+}
+
+/* Ensure minimum touch targets */
+.btn,
+.floating-btn,
+.popup-menu-item,
+.calc-key {
+  min-height: 36px;
+}
+
+@media (pointer: coarse) {
+  .btn-icon,
+  .btn-icon-sm,
+  .floating-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .resize-handle {
+    min-width: 14px;
+    min-height: 14px;
+  }
+}
+
+/* Reduced transparency for users who prefer it */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong,
+  .glass-subtle,
+  .glass-panel,
+  .study-object {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+}

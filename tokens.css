@@ -1,0 +1,101 @@
+:root {
+  /* Color palette - warm off-white desk */
+  --color-bg: #f7f5f0;
+  --color-bg-secondary: #f0ede6;
+  --color-surface: rgba(255, 255, 255, 0.55);
+  --color-surface-solid: #ffffff;
+  --color-text: #2c2a26;
+  --color-text-secondary: #6b6560;
+  --color-text-muted: #9a948c;
+  --color-border: rgba(44, 42, 38, 0.08);
+  --color-border-strong: rgba(44, 42, 38, 0.14);
+  --color-accent: #3d5a4c;
+  --color-accent-soft: rgba(61, 90, 76, 0.12);
+  --color-accent-hover: #2f4639;
+  --color-danger: #b54a3c;
+  --color-danger-soft: rgba(181, 74, 60, 0.12);
+  --color-success: #3d7a5a;
+  --color-warning: #c48a2b;
+
+  /* Glass system */
+  --glass-bg: rgba(255, 255, 255, 0.52);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.35);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-border-outer: rgba(44, 42, 38, 0.06);
+  --glass-blur: 16px;
+  --glass-blur-strong: 24px;
+  --glass-shadow: 0 4px 24px rgba(44, 42, 38, 0.06), 0 1px 3px rgba(44, 42, 38, 0.04);
+  --glass-shadow-elevated: 0 8px 40px rgba(44, 42, 38, 0.1), 0 2px 8px rgba(44, 42, 38, 0.06);
+  --glass-shadow-soft: 0 2px 12px rgba(44, 42, 38, 0.04);
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, monospace;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* Elevation / z-index */
+  --z-canvas: 0;
+  --z-objects: 10;
+  --z-selected: 100;
+  --z-controls: 200;
+  --z-tools: 300;
+  --z-menu: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+
+  /* Animation */
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 320ms;
+  --duration-wave: 1200ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Grid */
+  --grid-size: 28px;
+  --grid-dot: rgba(44, 42, 38, 0.07);
+  --grid-dot-active: rgba(61, 90, 76, 0.18);
+
+  /* Object defaults */
+  --object-min-width: 160px;
+  --object-min-height: 120px;
+  --object-handle: 10px;
+
+  /* Controls */
+  --control-height: 36px;
+  --control-height-sm: 28px;
+  --touch-target: 44px;
+}

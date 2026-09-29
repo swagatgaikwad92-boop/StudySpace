@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f5f0" />
+  <meta name="description" content="Study Space — a calm digital study desk" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Study Space" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <title>Study Space</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <!-- PDF.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+</head>
+<body>
+  <a href="#workspace" class="skip-link">Skip to workspace</a>
+
+  <div id="workspace" role="application" aria-label="Study Space workspace">
+    <div id="canvas-container">
+      <div id="canvas-world">
+        <div id="canvas-grid" aria-hidden="true"></div>
+        <div id="grid-wave" aria-hidden="true"></div>
+        <div id="objects-layer"></div>
+        <div id="drawing-layer">
+          <canvas id="drawing-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-state">
+      <p class="empty-message">Your desk is ready.</p>
+      <div class="empty-actions">
+        <button type="button" class="btn glass glass-interactive" id="empty-add-btn" aria-label="Add content">
+          Add
+        </button>
+        <button type="button" class="btn glass glass-interactive" id="empty-tools-btn" aria-label="Open tools">
+          Tools
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating controls -->
+    <button type="button" id="add-btn" class="floating-btn glass glass-interactive" aria-label="Add content" title="Add">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+
+    <button type="button" id="tools-btn" class="floating-btn glass glass-interactive" aria-label="Tools" title="Tools">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </button>
+
+    <!-- Add menu -->
+    <div id="add-menu" class="popup-menu glass-strong" role="menu" aria-label="Add content">
+      <button type="button" class="popup-menu-item" data-action="add-pdf" role="menuitem">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        PDF
+      </button>
+      <button type="button" class="popup-menu-item" data-action="add-video" role="menuitem">
+        <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Video
+      </button>
+      <button type="button" class="popup-menu-item" data-action="add-image" role="menuitem">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Image
+      </button>
+      <button type="button" class="popup-menu-item" data-action="add-text" role="menuitem">
+        <svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        Text
+      </button>
+      <div class="popup-menu-divider"></div>
+      <button type="button" class="popup-menu-item" data-action="add-file" role="menuitem">
+        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        File
+      </button>
+      <button type="button" class="popup-menu-item" data-action="add-camera" role="menuitem">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Camera
+      </button>
+    </div>
+
+    <!-- Tools menu -->
+    <div id="tools-menu" class="popup-menu glass-strong" role="menu" aria-label="Tools">
+      <button type="button" class="popup-menu-item" data-action="tool-sticky" role="menuitem">
+        <svg viewBox="0 0 24 24"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"/><polyline points="15 3 15 9 21 9"/></svg>
+        Sticky Note
+      </button>
+      <button type="button" class="popup-menu-item" data-action="tool-pen" role="menuitem">
+        <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+        Pen
+      </button>
+      <button type="button" class="popup-menu-item" data-action="tool-focus" role="menuitem">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        Focus
+      </button>
+      <button type="button" class="popup-menu-item" data-action="tool-calculator" role="menuitem">
+        <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+        Calculator
+      </button>
+      <div class="popup-menu-divider"></div>
+      <button type="button" class="popup-menu-item" data-action="tool-pomodoro" role="menuitem">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Pomodoro
+      </button>
+      <button type="button" class="popup-menu-item" data-action="tool-dabsy" role="menuitem">
+        <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 3.5 2.5 6.5 6 7.5V21h4v-3.5c3.5-1 6-4 6-7.5a8 8 0 0 0-8-8z"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/></svg>
+        DABSy
+      </button>
+    </div>
+
+    <!-- Pen toolbar -->
+    <div id="pen-toolbar" class="glass-strong" role="toolbar" aria-label="Pen tools">
+      <button type="button" class="btn-icon-sm btn" data-pen-action="undo" title="Undo" aria-label="Undo">
+        <svg viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M3 13c0-4.97 4.03-9 9-9a9 9 0 0 1 8.66 6.5"/></svg>
+      </button>
+      <button type="button" class="btn-icon-sm btn" data-pen-action="redo" title="Redo" aria-label="Redo">
+        <svg viewBox="0 0 24 24"><path d="M21 7v6h-6"/><path d="M21 13c0-4.97-4.03-9-9-9a9 9 0 0 0-8.66 6.5"/></svg>
+      </button>
+      <div style="width:1px;height:20px;background:var(--color-border);margin:0 4px;"></div>
+      <button type="button" class="pen-size-btn active" data-size="2" aria-label="Thin stroke"></button>
+      <button type="button" class="pen-size-btn" data-size="4" aria-label="Medium stroke"></button>
+      <button type="button" class="pen-size-btn" data-size="8" aria-label="Thick stroke"></button>
+      <button type="button" class="pen-size-btn" data-size="14" aria-label="Extra thick stroke"></button>
+      <div style="width:1px;height:20px;background:var(--color-border);margin:0 4px;"></div>
+      <button type="button" class="pen-color-btn active" data-color="#2c2a26" style="background:#2c2a26" aria-label="Black"></button>
+      <button type="button" class="pen-color-btn" data-color="#3d5a4c" style="background:#3d5a4c" aria-label="Green"></button>
+      <button type="button" class="pen-color-btn" data-color="#b54a3c" style="background:#b54a3c" aria-label="Red"></button>
+      <button type="button" class="pen-color-btn" data-color="#3b6ea5" style="background:#3b6ea5" aria-label="Blue"></button>
+      <div style="width:1px;height:20px;background:var(--color-border);margin:0 4px;"></div>
+      <button type="button" class="btn-icon-sm btn" data-pen-action="erase" title="Eraser" aria-label="Eraser">
+        <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4L12.4 20"/><path d="M6 11l7 7"/></svg>
+      </button>
+      <button type="button" class="btn-icon-sm btn" data-pen-action="clear" title="Clear all" aria-label="Clear drawing">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </button>
+      <button type="button" class="btn-icon-sm btn" data-pen-action="done" title="Done" aria-label="Finish drawing">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Focus overlay -->
+    <div id="focus-overlay" aria-hidden="true"></div>
+
+    <!-- Context menu -->
+    <div id="context-menu" class="popup-menu glass-strong" role="menu" hidden></div>
+
+    <!-- Toast container -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="file-pdf" accept="application/pdf,.pdf" class="file-input-hidden" />
+    <input type="file" id="file-image" accept="image/*" class="file-input-hidden" />
+    <input type="file" id="file-any" accept="*/*" class="file-input-hidden" />
+    <input type="file" id="file-camera" accept="image/*" capture="environment" class="file-input-hidden" />
+  </div>
+
+  <!-- Scripts - modular, order matters for dependencies -->
+  <script type="module" src="scripts/app.js"></script>
+</body>
+</html>

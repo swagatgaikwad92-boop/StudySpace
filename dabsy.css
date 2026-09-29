@@ -1,0 +1,142 @@
+/* DABSy companion window */
+
+.dabsy-object {
+  width: 280px !important;
+  min-width: 240px !important;
+  min-height: 200px !important;
+}
+
+.dabsy-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-3);
+  gap: var(--space-2);
+}
+
+.dabsy-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dabsy-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.dabsy-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.dabsy-status {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+.dabsy-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 80px;
+}
+
+.dabsy-message {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-secondary);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.03);
+  max-width: 95%;
+}
+
+.dabsy-message.user {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  align-self: flex-end;
+}
+
+.dabsy-message.system {
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  text-align: center;
+  padding: var(--space-1);
+}
+
+.dabsy-input-row {
+  display: flex;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.dabsy-input {
+  flex: 1;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  outline: none;
+}
+
+.dabsy-input:focus {
+  border-color: var(--color-accent);
+}
+
+.dabsy-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.dabsy-send {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--duration-fast);
+}
+
+.dabsy-send:hover {
+  background: var(--color-accent-hover);
+}
+
+.dabsy-send svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.dabsy-context-hint {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-1) 0;
+}

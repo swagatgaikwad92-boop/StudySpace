@@ -1,0 +1,116 @@
+/* Responsive adjustments */
+
+/* Mobile portrait */
+@media (max-width: 600px) {
+  :root {
+    --control-height: 40px;
+    --control-height-sm: 32px;
+    --object-min-width: 140px;
+    --object-min-height: 100px;
+  }
+
+  #add-btn {
+    bottom: var(--space-4);
+  }
+
+  #tools-btn {
+    bottom: var(--space-4);
+    right: var(--space-4);
+  }
+
+  #tools-menu {
+    bottom: calc(var(--space-4) + 52px);
+    right: var(--space-4);
+  }
+
+  #pen-toolbar {
+    bottom: calc(var(--space-4) + 52px);
+    flex-wrap: wrap;
+    max-width: calc(100vw - 32px);
+    justify-content: center;
+  }
+
+  .pomodoro-object {
+    width: 180px !important;
+  }
+
+  .pomodoro-timer {
+    font-size: 1.75rem;
+  }
+
+  .calculator-object {
+    width: 220px !important;
+  }
+
+  .dabsy-object {
+    width: 260px !important;
+    min-width: 220px !important;
+  }
+
+  .popup-menu {
+    min-width: 160px;
+  }
+
+  .object-titlebar {
+    min-height: 36px;
+  }
+
+  /* Larger touch targets on mobile */
+  .resize-handle {
+    width: 14px;
+    height: 14px;
+  }
+
+  .resize-handle.nw { top: -7px; left: -7px; }
+  .resize-handle.ne { top: -7px; right: -7px; }
+  .resize-handle.sw { bottom: -7px; left: -7px; }
+  .resize-handle.se { bottom: -7px; right: -7px; }
+}
+
+/* Landscape phone */
+@media (max-height: 500px) and (orientation: landscape) {
+  #add-btn {
+    bottom: var(--space-3);
+  }
+
+  #tools-btn {
+    bottom: var(--space-3);
+    right: var(--space-3);
+  }
+
+  .pomodoro-content {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .pomodoro-timer {
+    font-size: 1.5rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .floating-btn {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Desktop refinements */
+@media (min-width: 1025px) {
+  .study-object:hover .object-titlebar {
+    opacity: 1;
+    max-height: 40px;
+  }
+}
+
+/* Safe area for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  #add-btn {
+    bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+  }
+
+  #tools-btn {
+    bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+  }
+}

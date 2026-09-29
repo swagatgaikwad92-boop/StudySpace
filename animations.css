@@ -1,0 +1,85 @@
+/* Microinteractions and transitions */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  #grid-wave.active {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Soft appear */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-out);
+}
+
+.animate-fade-up {
+  animation: fade-up var(--duration-normal) var(--ease-out);
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) var(--ease-out);
+}
+
+/* Object appear */
+.study-object {
+  animation: scale-in var(--duration-normal) var(--ease-out);
+}
+
+/* Selection glow */
+.study-object.object-selected {
+  transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+/* Soft press */
+.btn:active,
+.floating-btn:active,
+.calc-key:active {
+  transition-duration: 60ms;
+}
+
+/* Loading spinner already in windows.css */
+
+/* Wave for break transition */
+#grid-wave.break-wave {
+  background: radial-gradient(
+    circle at var(--wave-x, 50%) var(--wave-y, 50%),
+    rgba(196, 138, 43, 0.1) 0%,
+    rgba(196, 138, 43, 0.05) 15%,
+    transparent 40%
+  );
+}

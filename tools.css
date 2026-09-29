@@ -1,0 +1,169 @@
+/* Tools: sticky notes, pen, focus, calculator */
+
+/* Pen toolbar */
+#pen-toolbar {
+  position: fixed;
+  bottom: calc(var(--space-6) + 56px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  z-index: var(--z-tools);
+}
+
+#pen-toolbar.visible {
+  display: flex;
+}
+
+.pen-size-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: var(--color-text);
+  cursor: pointer;
+  transition: border-color var(--duration-fast), transform var(--duration-fast);
+  padding: 0;
+}
+
+.pen-size-btn.active {
+  border-color: var(--color-accent);
+  transform: scale(1.15);
+}
+
+.pen-size-btn[data-size="2"] { width: 10px; height: 10px; }
+.pen-size-btn[data-size="4"] { width: 16px; height: 16px; }
+.pen-size-btn[data-size="8"] { width: 22px; height: 22px; }
+.pen-size-btn[data-size="14"] { width: 28px; height: 28px; }
+
+.pen-color-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color var(--duration-fast), transform var(--duration-fast);
+  padding: 0;
+}
+
+.pen-color-btn.active {
+  border-color: var(--color-text);
+  transform: scale(1.15);
+}
+
+/* Focus mode overlay */
+#focus-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(247, 245, 240, 0.55);
+  z-index: calc(var(--z-objects) - 1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--duration-slow) var(--ease-out), visibility var(--duration-slow);
+}
+
+#focus-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body.focus-mode .study-object:not(.object-focused) {
+  opacity: 0.25;
+  pointer-events: none;
+  filter: blur(1px);
+  transition: opacity var(--duration-slow), filter var(--duration-slow);
+}
+
+body.focus-mode .study-object.object-focused {
+  z-index: var(--z-selected) !important;
+  box-shadow: var(--glass-shadow-elevated);
+}
+
+body.focus-mode #empty-state,
+body.focus-mode #add-btn,
+body.focus-mode #tools-btn,
+body.focus-mode #pen-toolbar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Calculator */
+.calculator-object {
+  width: 240px !important;
+  min-width: 240px !important;
+  min-height: auto !important;
+}
+
+.calculator-display {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  text-align: right;
+  color: var(--color-text);
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid var(--color-border);
+  min-height: 48px;
+  word-break: break-all;
+  overflow: hidden;
+}
+
+.calculator-keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--color-border);
+  padding: 1px;
+}
+
+.calc-key {
+  border: none;
+  background: var(--color-surface-solid);
+  padding: var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.calc-key:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.calc-key:active {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.calc-key.op {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: var(--weight-medium);
+}
+
+.calc-key.op:hover {
+  background: rgba(61, 90, 76, 0.2);
+}
+
+.calc-key.eq {
+  background: var(--color-accent);
+  color: white;
+}
+
+.calc-key.eq:hover {
+  background: var(--color-accent-hover);
+}
+
+.calc-key.span-2 {
+  grid-column: span 2;
+}
+
+/* Tools menu positioning */
+#tools-menu {
+  bottom: calc(var(--space-6) + 56px);
+  right: var(--space-6);
+}
