@@ -99,7 +99,9 @@ class StudySpaceApp {
     // Service worker
     this._registerSW();
 
+    this._bindBootstrapEvents();
     this.ready = true;
+    window.__studySpaceApp = this;
     bus.emit('app:ready');
     console.info('[Study Space] Ready');
   }
@@ -130,6 +132,31 @@ class StudySpaceApp {
       if (file) this.importImage(file);
       cameraInput.value = '';
     });
+  }
+
+
+  // Bridge bootstrap custom events → app handlers
+  _bindBootstrapEvents() {
+    window.addEventListener('ss:add', (e) => {
+      if (e.detail?.action) this.handleAdd(e.detail.action);
+    });
+    window.addEventListener('ss:tool', (e) => {
+      if (e.detail?.action) this.handleTool(e.detail.action);
+    });
+    window.addEventListener('ss:add-video', (e) => {
+      if (e.detail?.url) {
+        const videoId = VideoObject.extractYouTubeId(e.detail.url);
+        if (!videoId) { toast('Could not recognize that YouTube URL'); return; }
+        const pos = this.om.findFreePosition(420, 280);
+        const obj = new VideoObject({
+          x: pos.x, y: pos.y, width: 420, height: 280,
+          title: 'Video', state: { videoId, url: e.detail.url },
+        });
+        this.om.add(obj);
+        this.om.select(obj.id);
+      }
+    });
+    window.addEventListener('ss:add-text', () => this.addText());
   }
 
   handleAdd(action) {

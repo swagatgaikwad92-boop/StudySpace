@@ -1,14 +1,10 @@
-/**
- * Study Space service worker — offline shell
- * Relative paths for GitHub Pages compatibility
- */
-
-const CACHE_NAME = 'study-space-v3';
+const CACHE_NAME = 'study-space-v4';
 const SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './styles/main.css',
+  './scripts/bootstrap.js',
+  './scripts/app.js',
   './styles/tokens.css',
   './styles/glass.css',
   './styles/canvas.css',
@@ -20,13 +16,17 @@ const SHELL = [
   './styles/animations.css',
   './styles/responsive.css',
   './styles/accessibility.css',
-  './scripts/app.js',
   './assets/icons/icon.svg',
+  './assets/icons/icon-192.png',
+  './assets/icons/icon-512.png',
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
+      .catch((e) => console.warn('[SW] install', e))
   );
 });
 
@@ -41,20 +41,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
 
-  // Only same-origin
-  if (url.origin !== self.location.origin) {
-    // Network-first for CDN (PDF.js etc.) — fall through
-    return;
-  }
-
-  // Navigation: network first, fallback to cache
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
         .then((res) => {
           const clone = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(request, clone));
+          caches.open(CACHE_NAME).then((c) => c.put('./index.html', clone));
           return res;
         })
         .catch(() => caches.match('./index.html'))
@@ -62,7 +56,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Assets: cache first
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;

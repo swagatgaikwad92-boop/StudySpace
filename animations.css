@@ -83,3 +83,19 @@
     transparent 40%
   );
 }
+
+#empty-state .empty-message {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.floating-btn {
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+#add-btn { animation-delay: 0.15s; }
+#tools-btn { animation-delay: 0.22s; }
+
+@media (prefers-reduced-motion: reduce) {
+  #empty-state .empty-message,
+  .floating-btn {
+    animation: none;
+  }
+}
