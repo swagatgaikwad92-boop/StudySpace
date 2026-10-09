@@ -1,71 +1,31 @@
-const CACHE_NAME = 'study-space-v4';
-const SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './scripts/bootstrap.js',
-  './scripts/app.js',
-  './styles/tokens.css',
-  './styles/glass.css',
-  './styles/canvas.css',
-  './styles/windows.css',
-  './styles/controls.css',
-  './styles/tools.css',
-  './styles/pomodoro.css',
-  './styles/dabsy.css',
-  './styles/animations.css',
-  './styles/responsive.css',
-  './styles/accessibility.css',
-  './assets/icons/icon.svg',
-  './assets/icons/icon-192.png',
-  './assets/icons/icon-512.png',
-];
+// Study Space service worker: caches the application shell so the desk opens offline.
+// Cross-origin requests (YouTube, AI endpoints) are never cached or intercepted.
+const VERSION = '1879242103';
+const CACHE = `study-space-${VERSION}`;
+const PRECACHE = /*__PRECACHE__*/["./", "./app.js", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./icon.svg", "./index.html", "./manifest.json", "./pdf.min.mjs", "./pdf.worker.min.mjs", "./style.css"];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
-      .then(() => self.skipWaiting())
-      .catch((e) => console.warn('[SW] install', e))
-  );
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE.map((u) => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
+self.addEventListener('activate', (e) => {
+  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith('study-space-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
+self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((res) => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put('./index.html', clone));
-          return res;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
+  // Navigations: network first (fresh shell), fall back to cached index.html offline.
+  if (req.mode === 'navigate') {
+    e.respondWith(fetch(req).then((r) => { const copy = r.clone(); caches.open(CACHE).then((c) => c.put('./index.html', copy)); return r; })
+      .catch(() => caches.match('./index.html')));
     return;
   }
-
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((res) => {
-        if (res.ok && request.method === 'GET') {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(request, clone));
-        }
-        return res;
-      }).catch(() => cached);
-    })
-  );
+  // Everything else: cache first, refresh in the background.
+  e.respondWith(caches.match(req).then((hit) => {
+    const net = fetch(req).then((r) => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); } return r; }).catch(() => hit);
+    return hit || net;
+  }));
 });
