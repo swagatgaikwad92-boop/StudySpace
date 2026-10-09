@@ -1,6 +1,6 @@
 // Study Space service worker: caches the application shell so the desk opens offline.
 // Cross-origin requests (YouTube, AI endpoints) are never cached or intercepted.
-const VERSION = '1879242103';
+const VERSION = '1879242102';
 const CACHE = `study-space-${VERSION}`;
 const PRECACHE = /*__PRECACHE__*/["./", "./app.js", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./icon.svg", "./index.html", "./manifest.json", "./pdf.min.mjs", "./pdf.worker.min.mjs", "./style.css"];
 
